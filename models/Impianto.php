@@ -31,8 +31,7 @@ class Impianto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'nome', 'citta', 'indirizzo'], 'required'],
-            [['id'], 'integer'],
+            [['nome', 'citta', 'indirizzo'], 'required'],
             [['indirizzo'], 'string'],
             [['nome', 'citta'], 'string', 'max' => 35],
         ];

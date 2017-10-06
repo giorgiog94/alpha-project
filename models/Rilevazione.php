@@ -13,7 +13,7 @@ use Yii;
  * @property string $datetime
  * @property string $messaggio
  *
- * @property Sensori $idSensore
+ * @property Sensore $idSensore
  */
 class Rilevazione extends \yii\db\ActiveRecord
 {
@@ -36,7 +36,7 @@ class Rilevazione extends \yii\db\ActiveRecord
             [['datetime'], 'safe'],
             [['stringa', 'messaggio'], 'string', 'max' => 100],
             [['id_sensore'], 'string', 'max' => 10],
-            [['id_sensore'], 'exist', 'skipOnError' => true, 'targetClass' => Sensori::className(), 'targetAttribute' => ['id_sensore' => 'id']],
+            [['id_sensore'], 'exist', 'skipOnError' => true, 'targetClass' => Sensore::className(), 'targetAttribute' => ['id_sensore' => 'id']],
         ];
     }
 
@@ -59,6 +59,6 @@ class Rilevazione extends \yii\db\ActiveRecord
      */
     public function getIdSensore()
     {
-        return $this->hasOne(Sensori::className(), ['id' => 'id_sensore']);
+        return $this->hasOne(Sensore::className(), ['id' => 'id_sensore']);
     }
 }

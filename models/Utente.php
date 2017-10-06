@@ -34,8 +34,8 @@ class Utente extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['id', 'username', 'password', 'authKey', 'access_token', 'is_staff', 'impianto_attivo'], 'required'],
-            [['id', 'is_staff', 'impianto_attivo'], 'integer'],
+            [['username', 'password', 'authKey', 'access_token', 'is_staff'], 'required'],
+            [['is_staff', 'impianto_attivo'], 'integer'],
             [['username'], 'string', 'max' => 35],
             [['password', 'access_token'], 'string', 'max' => 255],
             [['authKey'], 'string', 'max' => 50],
@@ -141,6 +141,14 @@ class Utente extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $password;
+    }
+
+    public static function findbyUsername($username) {
+        return Utente::findOne(['username' => $username]);
+    }
+
+    public static function getUserLogged() {
+        return Yii::$app->getUser();
     }
 
 }
