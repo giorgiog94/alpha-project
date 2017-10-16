@@ -2,12 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\Utente;
 use Yii;
 use app\models\Impianto;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\widgets\ActiveForm;
+use yii\web\Response;
 
 /**
  * ImpiantoController implements the CRUD actions for Impianto model.
@@ -93,6 +97,16 @@ class ImpiantoController extends Controller
         }
     }
 
+    public function actionValidate()
+    {
+        $model = new Impianto();
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+    }
+
     /**
      * Deletes an existing Impianto model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -120,5 +134,27 @@ class ImpiantoController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionAttiva($id)
+    {
+        if(!Utente::isAdmin()) {
+            $flag = false;
+            $sitiCliente = Impianto::find()->where(['id_cliente' => Utente::getUserLogged()->id])->all();
+            foreach ($sitiCliente as $sito) {
+                if($sito['id'] == $id) {
+                    $flag = true;
+                    break;
+                }
+            }
+            if ($flag == false) {
+                throw new HttpException(401, 'Non puoi frugare nei siti degli altri');
+            }
+        }
+
+        $user = Utente::getUserLogged();
+        $user->sito_attivo = $id;
+        $user->save();
+        return $this->redirect(['index']);
     }
 }

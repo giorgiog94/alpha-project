@@ -11,6 +11,7 @@ use Yii;
  * @property string $nome
  * @property string $citta
  * @property string $indirizzo
+ * @property integer $user_id
  *
  * @property Sensore[] $sensoris
  * @property Utente[] $utentis
@@ -31,9 +32,11 @@ class Impianto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nome', 'citta', 'indirizzo'], 'required'],
+            [['nome', 'citta', 'indirizzo', 'user_id'], 'required'],
             [['indirizzo'], 'string'],
+            [['user_id'], 'integer'],
             [['nome', 'citta'], 'string', 'max' => 35],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Utente::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -47,8 +50,18 @@ class Impianto extends \yii\db\ActiveRecord
             'nome' => 'Nome',
             'citta' => 'Citta',
             'indirizzo' => 'Indirizzo',
+            'user_id' => 'User ID',
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(Utente::className(), ['id' => 'user_id']);
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery

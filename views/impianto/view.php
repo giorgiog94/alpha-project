@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Impianto */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Impiantos', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Impianti', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="impianto-view">

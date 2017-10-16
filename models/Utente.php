@@ -40,6 +40,7 @@ class Utente extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['password', 'access_token'], 'string', 'max' => 255],
             [['authKey'], 'string', 'max' => 50],
             [['impianto_attivo'], 'exist', 'skipOnError' => true, 'targetClass' => Impianto::className(), 'targetAttribute' => ['impianto_attivo' => 'id']],
+            ['username', 'in', 'range' => Utente::getUsernames(), 'not' => true, 'message'=>'Game Over! Username già usato! :)'],
         ];
     }
 
@@ -143,12 +144,38 @@ class Utente extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->password === $password;
     }
 
-    public static function findbyUsername($username) {
+    public static function findbyUsername($username)
+    {
         return Utente::findOne(['username' => $username]);
     }
 
-    public static function getUserLogged() {
-        return Yii::$app->getUser();
+    public static function getUserLogged()
+    {
+        return Utente::findOne(['id' => Yii::$app->getUser()->id]);
     }
 
+    public static function isOspite()
+    {
+        return self::getUserLogged() ? true : false;
+    }
+
+    public static function isCliente()
+    {
+        return !self::isOspite() && !self::isAdmin();
+    }
+
+    public static function isAdmin()
+    {
+        return !self::isOspite() ? self::getUserLogged()->is_staff : false;
+    }
+
+    private static function getUsernames()
+    {
+        $utenti = Utente::find()->all();
+        $usernames = array();
+        foreach ($utenti as $utente) {
+            array_push($usernames, $utente['username']);
+        }
+        return $usernames;
+    }
 }
